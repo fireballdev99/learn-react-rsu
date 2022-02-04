@@ -1,8 +1,6 @@
 // material-ui
 import { useState, useEffect } from 'react'
 import { DataGrid } from '@mui/x-data-grid';
-import { FormControlLabel, IconButton } from '@material-ui/core';
-import { blue } from '@material-ui/core/colors';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
