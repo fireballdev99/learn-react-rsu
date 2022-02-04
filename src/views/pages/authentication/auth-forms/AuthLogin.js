@@ -68,7 +68,7 @@ const FirebaseLogin = ({ ...others }) => {
                     console.log(response.data);
                     Cookies.set('username', usernames, { expires: 7 });
                     Cookies.set('accessToken', response.data.accessToken, { expires: 7 });
-                    navigate('/free');
+                    navigate('/');
                 }
             })
             .catch((error) => {

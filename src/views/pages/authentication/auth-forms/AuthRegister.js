@@ -89,7 +89,7 @@ const FirebaseRegister = ({ ...others }) => {
             )
             .then((response) => {
                 console.log(response.data);
-                navigate('/free/pages/login/login3');
+                navigate('/pages/login/login3');
             })
             .catch((error) => {
                 console.log(error);
