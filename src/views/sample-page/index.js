@@ -1,5 +1,5 @@
 // material-ui
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 
 // project imports
@@ -12,7 +12,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import { FormControl } from '@mui/material';
 
 // ==============================|| SAMPLE PAGE ||============================== //
-
 
 const SamplePage = () => {
     const [rows, setRows] = useState([]);
@@ -55,12 +54,11 @@ const SamplePage = () => {
             width: 140,
             disableClickEventBubbling: true,
             renderCell: (params) => (
-                <div style={{ cursor: "pointer" }}>
+                <div style={{ cursor: 'pointer' }}>
                     <EditIcon index={params.row.id} />
                 </div>
-            ),
-        },
-
+            )
+        }
     ];
 
     // ==============================|| Get members  ||============================== //
@@ -69,14 +67,12 @@ const SamplePage = () => {
         const config = {
             headers: { Authorization: `Bearer ${token}` }
         };
-        axios
-            .get(`https://dodeep-api.mecallapi.com/users`, config)
-            .then((response) => setRows(response.data.users));
-    }
+        axios.get(`https://dodeep-api.mecallapi.com/users`, config).then((response) => setRows(response.data.users));
+    };
 
     useEffect(() => {
         getMembers();
-    }, [])
+    }, []);
     return (
         <MainCard title="Member list">
             <div style={{ height: 400, width: '100%' }}>
@@ -92,6 +88,6 @@ const SamplePage = () => {
             </div>
         </MainCard>
     );
-}
+};
 
-export default SamplePage
+export default SamplePage;
