@@ -1,5 +1,6 @@
 // assets
 import { IconKey } from '@tabler/icons';
+import PersonIcon from '@mui/icons-material/Person';
 
 // constant
 const icons = {
@@ -15,25 +16,41 @@ const pages = {
     type: 'group',
     children: [
         {
+            id: 'member',
+            title: 'Member',
+            type: 'collapse',
+            icon: PersonIcon,
+
+            children: [
+                {
+                    id: 'memberlist',
+                    title: 'Member List',
+                    type: 'item',
+                    url: '/sample-page',
+                    target: false
+                }
+            ]
+        },
+        {
             id: 'authentication',
-            title: 'Authentication',
+            title: 'Something',
             type: 'collapse',
             icon: icons.IconKey,
 
             children: [
                 {
                     id: 'login3',
-                    title: 'Login',
+                    title: 'Something if you want',
                     type: 'item',
-                    url: '/pages/login/login3',
-                    target: true
+                    url: '/',
+                    target: false
                 },
                 {
                     id: 'register3',
-                    title: 'Register',
+                    title: 'Something if you want',
                     type: 'item',
-                    url: '/pages/register/register3',
-                    target: true
+                    url: '/',
+                    target: false
                 }
             ]
         }

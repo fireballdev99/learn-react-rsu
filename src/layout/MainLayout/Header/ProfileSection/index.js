@@ -29,6 +29,7 @@ import {
 
 // third-party
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import Cookies from 'js-cookie';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
@@ -45,7 +46,7 @@ const ProfileSection = () => {
     const theme = useTheme();
     const customization = useSelector((state) => state.customization);
     const navigate = useNavigate();
-
+    const [username, setUsername] = useState('');
     const [sdm, setSdm] = useState(true);
     const [value, setValue] = useState('');
     const [notification, setNotification] = useState(false);
@@ -56,7 +57,9 @@ const ProfileSection = () => {
      * */
     const anchorRef = useRef(null);
     const handleLogout = async () => {
-        console.log('Logout');
+        Cookies.remove('accessToken');
+        Cookies.remove('username');
+        navigate('/pages/login/login3');
     };
 
     const handleClose = (event) => {
@@ -85,6 +88,8 @@ const ProfileSection = () => {
         }
 
         prevOpen.current = open;
+        const user = Cookies.get('username');
+        setUsername(user);
     }, [open]);
 
     return (
@@ -159,7 +164,7 @@ const ProfileSection = () => {
                                             <Stack direction="row" spacing={0.5} alignItems="center">
                                                 <Typography variant="h4">Good Morning,</Typography>
                                                 <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
-                                                    Johne Doe
+                                                    {username}
                                                 </Typography>
                                             </Stack>
                                             <Typography variant="subtitle2">Project Admin</Typography>
