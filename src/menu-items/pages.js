@@ -26,7 +26,7 @@ const pages = {
                     id: 'memberlist',
                     title: 'Member List',
                     type: 'item',
-                    url: '/sample-page',
+                    url: '/member-list',
                     target: false
                 }
             ]
