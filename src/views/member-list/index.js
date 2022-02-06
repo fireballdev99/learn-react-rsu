@@ -8,7 +8,6 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 // Icons
-import EditIcon from '@mui/icons-material/Edit';
 import { Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { pink } from '@mui/material/colors';
@@ -49,7 +48,7 @@ export function AlertDeleteDialog() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Disagree</Button>
-                    <Button onClick={handleClose} autoFocus>
+                    <Button onClick={submitDelete} autoFocus>
                         Agree
                     </Button>
                 </DialogActions>
@@ -74,7 +73,7 @@ export function FormDialog() {
         setPw(e.target.value);
     };
 
-    const submitChange = (e) => {
+    const submitChange = () => {
         console.log(pw);
         handleClose();
     };

@@ -18,6 +18,6 @@ export default function ThemeRoutes() {
         } else {
             navigate('/pages/login/login3');
         }
-    }, []);
+    });
     return useRoutes([MainRoutes, AuthenticationRoutes], config.basename);
 }
