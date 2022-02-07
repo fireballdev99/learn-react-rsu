@@ -1,5 +1,5 @@
 // material-ui
-import { useState, useEffect, useNavigate } from 'react';
+import { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
 
 // project imports
@@ -201,10 +201,6 @@ const MemberList = () => {
             })
             .catch((err) => setError(err));
         setIsLoaded(false);
-    };
-
-    const addMemButton = () => {
-        console.log('add member btn clicked!');
     };
 
     useEffect(() => {
