@@ -106,7 +106,11 @@ export function FormDialog() {
 }
 
 const MemberList = () => {
-    const [rows, setRows] = useState([]);
+    const [data, setData] = useState([]);
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [totalRows, setTotalRows] = useState(0);
+    const [perPage, setPerPage] = useState(10);
+    const [error, setError] = useState('');
 
     const columns = [
         {
@@ -138,23 +142,61 @@ const MemberList = () => {
     ];
 
     // ==============================|| Get members  ||============================== //
-    const getMembers = () => {
+    const getMembers = async (page) => {
+        setIsLoaded(true);
         const token = Cookies.get('accessToken');
         const config = {
             headers: { Authorization: `Bearer ${token}` }
         };
-        axios.get(`https://dodeep-api.mecallapi.com/users`, config).then((response) => setRows(response.data.users));
+        const response = await axios
+            .get(`https://dodeep-api.mecallapi.com/users?page=${page}&per_page=${perPage}&delay=1`, config)
+            .catch((err) => setError(err));
+        setData(response.data.users);
+        setTotalRows(response.data.total);
+        setIsLoaded(false);
+    };
+
+    const handlePageChange = (page) => {
+        getMembers(page);
+    };
+
+    const handlePerRowsChange = async (newPerPage, page) => {
+        setIsLoaded(true);
+        const token = Cookies.get('accessToken');
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+        const response = await axios
+            .get(`https://dodeep-api.mecallapi.com/users?page=${page}&per_page=${newPerPage}&delay=1`, config)
+            .catch((err) => setError(err));
+        setData(response.data.users);
+        setTotalRows(response.data.total);
+        setIsLoaded(false);
     };
 
     useEffect(() => {
-        getMembers();
+        getMembers(1);
     }, []);
+
+    if (error) {
+        return <div>Error: {error.message}</div>;
+    }
+    if (isLoaded) {
+        return <div>Loading. . . </div>;
+    }
     return (
-        <MainCard title="Member list">
-            <div style={{ height: 400, width: '100%' }}>
-                <DataTable columns={columns} data={rows} pagination />
-            </div>
-        </MainCard>
+        <div style={{ height: '100%', width: '100%' }}>
+            <DataTable
+                columns={columns}
+                data={data}
+                progressPending={isLoaded}
+                pagination
+                paginationServer
+                paginationTotalRows={totalRows}
+                onChangeRowsPerPage={handlePerRowsChange}
+                onChangePage={handlePageChange}
+            />
+        </div>
     );
 };
 
