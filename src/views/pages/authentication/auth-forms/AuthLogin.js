@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -59,14 +60,24 @@ const FirebaseLogin = ({ ...others }) => {
             })
             .then((response) => {
                 if (response.data) {
-                    console.log(response.data);
                     Cookies.set('username', usernames, { expires: 7 });
                     Cookies.set('accessToken', response.data.accessToken, { expires: 7 });
+                    Swal.fire({
+                        title: 'Login Successfully!',
+                        text: 'Welcome to Admin Dashboard',
+                        icon: 'success',
+                        confirmButtonText: 'Close'
+                    });
                     navigate('/');
                 }
             })
             .catch((error) => {
-                console.log(error);
+                Swal.fire({
+                    title: 'Username or Password invalid!',
+                    text: 'please try again',
+                    icon: 'error',
+                    confirmButtonText: 'Close'
+                });
             });
     };
 

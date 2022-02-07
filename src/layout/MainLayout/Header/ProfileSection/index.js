@@ -39,6 +39,7 @@ import User1 from 'assets/images/users/user-round.svg';
 
 // assets
 import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons';
+import Swal from 'sweetalert2';
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -59,6 +60,12 @@ const ProfileSection = () => {
     const handleLogout = async () => {
         Cookies.remove('accessToken');
         Cookies.remove('username');
+        Swal.fire({
+            title: 'Logout Successfully!',
+            text: 'See you again',
+            icon: 'success',
+            confirmButtonText: 'Close'
+        });
         navigate('/pages/login/login3');
     };
 

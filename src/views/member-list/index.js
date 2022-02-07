@@ -3,8 +3,6 @@ import { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
 
 // project imports
-import MainCard from 'ui-component/cards/MainCard';
-import axios from 'axios';
 import Cookies from 'js-cookie';
 
 // Icons
@@ -148,11 +146,13 @@ const MemberList = () => {
         const config = {
             headers: { Authorization: `Bearer ${token}` }
         };
-        const response = await axios
-            .get(`https://dodeep-api.mecallapi.com/users?page=${page}&per_page=${perPage}&delay=1`, config)
+        fetch(`https://dodeep-api.mecallapi.com/users?page=${page}&per_page=${perPage}&delay=1`, config)
+            .then((res) => res.json())
+            .then((result) => {
+                setData(result.users);
+                setTotalRows(result.total);
+            })
             .catch((err) => setError(err));
-        setData(response.data.users);
-        setTotalRows(response.data.total);
         setIsLoaded(false);
     };
 
@@ -166,11 +166,13 @@ const MemberList = () => {
         const config = {
             headers: { Authorization: `Bearer ${token}` }
         };
-        const response = await axios
-            .get(`https://dodeep-api.mecallapi.com/users?page=${page}&per_page=${newPerPage}&delay=1`, config)
+        fetch(`https://dodeep-api.mecallapi.com/users?page=${page}&per_page=${newPerPage}&delay=1`, config)
+            .then((res) => res.json())
+            .then((result) => {
+                setData(result.users);
+                setTotalRows(result.total);
+            })
             .catch((err) => setError(err));
-        setData(response.data.users);
-        setTotalRows(response.data.total);
         setIsLoaded(false);
     };
 
@@ -185,7 +187,7 @@ const MemberList = () => {
         return <div>Loading. . . </div>;
     }
     return (
-        <div style={{ height: '100%', width: '100%' }}>
+        <div style={{ height: '100%', width: '100%', borderRadius: '1.25rem 1.25rem 0px 0px' }}>
             <DataTable
                 columns={columns}
                 data={data}
