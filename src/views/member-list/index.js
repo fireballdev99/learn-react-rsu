@@ -6,9 +6,9 @@ import DataTable from 'react-data-table-component';
 import Cookies from 'js-cookie';
 
 // Icons
-import { Button, Typography } from '@mui/material';
+import { Button, Typography, Box } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { pink } from '@mui/material/colors';
+import { pink, amber } from '@mui/material/colors';
 
 // Dialog
 import TextField from '@mui/material/TextField';
@@ -19,9 +19,11 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import EditIcon from '@mui/icons-material/Edit';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
+// ==============================|| Delete Dialog ||============================== //
 export function AlertDeleteDialog(id) {
     const [open, setOpen] = useState(false);
 
@@ -69,6 +71,8 @@ export function AlertDeleteDialog(id) {
         </div>
     );
 }
+
+// ==============================|| Change Password Dialog ||============================== //
 
 export function FormDialog(id) {
     const [open, setOpen] = useState(false);
@@ -130,6 +134,98 @@ export function FormDialog(id) {
     );
 }
 
+// ==============================|| Edit Information Dialog ||============================== //
+
+export function EditDialog(id, fname, lname) {
+    const [open, setOpen] = useState(false);
+    const [data, setData] = useState({
+        fname: '',
+        lname: ''
+    });
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleChange = (e) => {
+        const value = e.target.value;
+        setData({ ...data, [e.target.name]: value });
+        console.log(data);
+    };
+
+    const submitChange = async () => {
+        const token = Cookies.get('accessToken');
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+        await axios.patch(`https://dodeep-api.mecallapi.com/users/${id}`, { fname: data.fname, lname: data.lname }, config).then((res) => {
+            handleClose();
+            console.log(res.data);
+            Swal.fire({
+                title: res.data.message,
+                text: `Status : ${res.data.status}`,
+                icon: 'success',
+                confirmButtonText: 'Close'
+            });
+        });
+    };
+
+    return (
+        <div>
+            <EditIcon sx={{ color: amber[500] }} onClick={handleClickOpen} />
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>Edit user information</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        UserID : {id} Fullname : {fname} {lname}
+                    </DialogContentText>
+                    <Box
+                        component="form"
+                        sx={{
+                            '& .MuiTextField-root': { m: 1, width: '25ch' }
+                        }}
+                        noValidate
+                        autoComplete="off"
+                    >
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="fname"
+                            name="fname"
+                            label="First Name"
+                            onChange={handleChange}
+                            type="text"
+                            fullWidth
+                            variant="standard"
+                            required
+                        />
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="lname"
+                            name="lname"
+                            label="Last Name"
+                            onChange={handleChange}
+                            type="text"
+                            fullWidth
+                            variant="standard"
+                            required
+                        />
+                    </Box>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={submitChange}>Submit</Button>
+                </DialogActions>
+            </Dialog>
+        </div>
+    );
+}
+
 const MemberList = () => {
     const [data, setData] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -158,6 +254,11 @@ const MemberList = () => {
             name: '',
             button: true,
             cell: (id) => FormDialog(id.userId)
+        },
+        {
+            name: '',
+            button: true,
+            cell: (id) => EditDialog(id.userId, id.fname, id.lname)
         },
         {
             name: '',
@@ -216,7 +317,7 @@ const MemberList = () => {
     return (
         <div style={{ height: '100%', width: '100%', borderRadius: '1.25rem 1.25rem 0px 0px' }}>
             <Typography to="/">
-                <Button style={{ margin: '0 0 10px 10px' }} variant="contained" color="success" href="/pages/register/register3">
+                <Button style={{ margin: '0 0 10px 10px' }} variant="contained" color="success" href="/register">
                     Add Members
                 </Button>
             </Typography>
