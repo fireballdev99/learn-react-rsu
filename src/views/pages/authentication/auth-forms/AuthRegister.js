@@ -34,6 +34,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import Swal from 'sweetalert2';
 
 // ===========================|| FIREBASE - REGISTER ||=========================== //
 
@@ -81,7 +82,13 @@ const FirebaseRegister = ({ ...others }) => {
             )
             .then((response) => {
                 console.log(response.data);
-                navigate('/pages/login/login3');
+                navigate('/member-list');
+                Swal.fire({
+                    title: response.data.message,
+                    text: `Status : ${response.data.status}`,
+                    icon: 'success',
+                    confirmButtonText: 'Close'
+                });
             })
             .catch((error) => {
                 console.log(error);
@@ -162,7 +169,7 @@ const FirebaseRegister = ({ ...others }) => {
                             </Grid>
                         </Grid>
                         <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-                            <InputLabel htmlFor="outlined-adornment-username-register">Email Address / Username</InputLabel>
+                            <InputLabel htmlFor="outlined-adornment-username-register">Username</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-username-register"
                                 type="username"
