@@ -227,7 +227,7 @@ const EditPage = ({ ...others }) => {
                                         variant="contained"
                                         color="secondary"
                                     >
-                                        Sign up
+                                        Edit
                                     </Button>
                                 </AnimateButton>
                             </Box>
