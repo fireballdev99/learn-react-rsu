@@ -25,7 +25,7 @@ import { Link } from 'react-router-dom';
 // ==============================|| SAMPLE PAGE ||============================== //
 
 // ==============================|| Delete Dialog ||============================== //
-export function AlertDeleteDialog(id) {
+export function AlertDeleteDialog(id, fname, lname) {
     const [open, setOpen] = useState(false);
 
     const handleClickOpen = () => {
@@ -60,75 +60,17 @@ export function AlertDeleteDialog(id) {
             <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
                 <DialogTitle id="alert-dialog-title" prop={"Use Google's location service?"} />
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description">Do you want to delete userID {id} ? Are you sure ?</DialogContentText>
+                    <DialogContentText id="alert-dialog-description">Do you want to delete</DialogContentText>
+                    <p>
+                        userID:{id} Name : {fname} {lname}
+                    </p>
+                    <p>Are you sure ?</p>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Disagree</Button>
                     <Button onClick={submitDelete} autoFocus>
                         Agree
                     </Button>
-                </DialogActions>
-            </Dialog>
-        </div>
-    );
-}
-
-// ==============================|| Change Password Dialog ||============================== //
-
-export function FormDialog(id) {
-    const [open, setOpen] = useState(false);
-    const [pw, setPw] = useState('');
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleChange = (e) => {
-        setPw(e.target.value);
-    };
-
-    const submitChange = async () => {
-        const token = Cookies.get('accessToken');
-        const config = {
-            headers: { Authorization: `Bearer ${token}` }
-        };
-        await axios.patch(`https://dodeep-api.mecallapi.com/users/${id}`, { password: pw }, config).then((res) => {
-            handleClose();
-            console.log(res.data);
-            Swal.fire({
-                title: res.data.message,
-                text: `Status : ${res.data.status}`,
-                icon: 'success',
-                confirmButtonText: 'Close'
-            });
-        });
-    };
-
-    return (
-        <div>
-            <Button onClick={handleClickOpen}>Change Password</Button>
-            <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Change Password</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>Enter new password for UserID {id} </DialogContentText>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="password"
-                        label="Password"
-                        onChange={handleChange}
-                        type="password"
-                        fullWidth
-                        variant="standard"
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={submitChange}>Submit</Button>
                 </DialogActions>
             </Dialog>
         </div>
@@ -265,17 +207,12 @@ const MemberList = () => {
         {
             name: '',
             button: true,
-            cell: (id) => FormDialog(id.userId)
-        },
-        {
-            name: '',
-            button: true,
             cell: (id) => Edit(id.userId)
         },
         {
             name: '',
             button: true,
-            cell: (id) => AlertDeleteDialog(id.userId)
+            cell: (id) => AlertDeleteDialog(id.userId, id.fname, id.lname)
         }
     ];
 
