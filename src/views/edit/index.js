@@ -1,13 +1,11 @@
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
     Button,
-    Checkbox,
     FormControl,
-    FormControlLabel,
     FormHelperText,
     Grid,
     IconButton,
@@ -27,7 +25,6 @@ import { Formik } from 'formik';
 // project imports
 import useScriptRef from 'hooks/useScriptRef';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { strengthColor, strengthIndicator } from 'utils/password-strength';
 
 // assets
 import Visibility from '@mui/icons-material/Visibility';
@@ -45,11 +42,7 @@ const EditPage = ({ ...others }) => {
     const scriptedRef = useScriptRef();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
     const [showPassword, setShowPassword] = useState(false);
-    const [checked, setChecked] = useState(true);
     const [items, setItems] = useState();
-
-    const [strength, setStrength] = useState(0);
-    const [level, setLevel] = useState();
 
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
@@ -57,12 +50,6 @@ const EditPage = ({ ...others }) => {
 
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
-    };
-
-    const changePassword = (value) => {
-        const temp = strengthIndicator(value);
-        setStrength(temp);
-        setLevel(strengthColor(temp));
     };
 
     const edit = (usernames, passwords, fnames, lnames) => {
@@ -82,7 +69,6 @@ const EditPage = ({ ...others }) => {
                 config
             )
             .then((response) => {
-                console.log(response.data);
                 navigate('/member-list');
                 Swal.fire({
                     title: response.data.message,
@@ -208,7 +194,6 @@ const EditPage = ({ ...others }) => {
                                     onBlur={handleBlur}
                                     onChange={(e) => {
                                         handleChange(e);
-                                        changePassword(e.target.value);
                                     }}
                                     endAdornment={
                                         <InputAdornment position="end">
