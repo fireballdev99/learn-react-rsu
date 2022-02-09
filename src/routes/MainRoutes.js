@@ -62,7 +62,7 @@ const MainRoutes = {
             element: <Register />
         },
         {
-            path: '/edit/:id',
+            path: '/edit/:id/',
             element: <EditPage />
         }
     ]

@@ -228,16 +228,11 @@ export function EditDialog(id, fnames, lnames) {
     );
 }
 
-export function TestBtn(id, fnames, lnames) {
-    const users = {
-        userId: id,
-        fname: fnames,
-        lname: lnames
-    };
+export function Edit(id) {
     return (
         <>
-            <Link to={{ pathname: `/edit/${users.userId}`, state: { user: users } }}>
-                <Button>TEST</Button>
+            <Link to={{ pathname: `/edit/${id}` }}>
+                <EditIcon sx={{ color: amber[500] }} />
             </Link>
         </>
     );
@@ -275,17 +270,12 @@ const MemberList = () => {
         {
             name: '',
             button: true,
-            cell: (id) => EditDialog(id.userId, id.fname, id.lname)
+            cell: (id) => Edit(id.userId)
         },
         {
             name: '',
             button: true,
             cell: (id) => AlertDeleteDialog(id.userId)
-        },
-        {
-            name: '',
-            button: true,
-            cell: (id) => TestBtn(id.userId, id.fname, id.lname)
         }
     ];
 
