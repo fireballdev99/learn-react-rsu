@@ -28,13 +28,6 @@ const pages = {
                     type: 'item',
                     url: '/member-list',
                     target: false
-                },
-                {
-                    id: 'register',
-                    title: 'Register Member',
-                    type: 'item',
-                    url: '/register',
-                    target: false
                 }
             ]
         },
