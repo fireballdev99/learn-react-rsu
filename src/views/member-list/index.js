@@ -20,6 +20,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import EditIcon from '@mui/icons-material/Edit';
+import { Link } from 'react-router-dom';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
@@ -136,7 +137,7 @@ export function FormDialog(id) {
 
 // ==============================|| Edit Information Dialog ||============================== //
 
-export function EditDialog(id, fname, lname) {
+export function EditDialog(id, fnames, lnames) {
     const [open, setOpen] = useState(false);
     const [data, setData] = useState({
         fname: '',
@@ -154,7 +155,6 @@ export function EditDialog(id, fname, lname) {
     const handleChange = (e) => {
         const value = e.target.value;
         setData({ ...data, [e.target.name]: value });
-        console.log(data);
     };
 
     const submitChange = async () => {
@@ -174,6 +174,10 @@ export function EditDialog(id, fname, lname) {
         });
     };
 
+    useEffect(() => {
+        setData({ fname: fnames, lname: lnames });
+    }, []);
+
     return (
         <div>
             <EditIcon sx={{ color: amber[500] }} onClick={handleClickOpen} />
@@ -181,7 +185,7 @@ export function EditDialog(id, fname, lname) {
                 <DialogTitle>Edit user information</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        UserID : {id} Fullname : {fname} {lname}
+                        UserID : {id} Fullname : {fnames} {lnames}
                     </DialogContentText>
                     <Box
                         component="form"
@@ -201,7 +205,6 @@ export function EditDialog(id, fname, lname) {
                             type="text"
                             fullWidth
                             variant="standard"
-                            required
                         />
                         <TextField
                             autoFocus
@@ -213,7 +216,6 @@ export function EditDialog(id, fname, lname) {
                             type="text"
                             fullWidth
                             variant="standard"
-                            required
                         />
                     </Box>
                 </DialogContent>
@@ -223,6 +225,21 @@ export function EditDialog(id, fname, lname) {
                 </DialogActions>
             </Dialog>
         </div>
+    );
+}
+
+export function TestBtn(id, fnames, lnames) {
+    const users = {
+        userId: id,
+        fname: fnames,
+        lname: lnames
+    };
+    return (
+        <>
+            <Link to={{ pathname: `/edit/${users.userId}`, state: { user: users } }}>
+                <Button>TEST</Button>
+            </Link>
+        </>
     );
 }
 
@@ -264,6 +281,11 @@ const MemberList = () => {
             name: '',
             button: true,
             cell: (id) => AlertDeleteDialog(id.userId)
+        },
+        {
+            name: '',
+            button: true,
+            cell: (id) => TestBtn(id.userId, id.fname, id.lname)
         }
     ];
 
@@ -277,7 +299,7 @@ const MemberList = () => {
         fetch(`https://dodeep-api.mecallapi.com/users?page=${page}&per_page=${perPage}&delay=1`, config)
             .then((res) => res.json())
             .then((result) => {
-                setData(result.users);
+                setData(result.data);
                 setTotalRows(result.total);
             })
             .catch((err) => setError(err));
@@ -297,7 +319,7 @@ const MemberList = () => {
         fetch(`https://dodeep-api.mecallapi.com/users?page=${page}&per_page=${newPerPage}&delay=1`, config)
             .then((res) => res.json())
             .then((result) => {
-                setData(result.users);
+                setData(result.data);
                 setTotalRows(result.total);
             })
             .catch((err) => setError(err));
