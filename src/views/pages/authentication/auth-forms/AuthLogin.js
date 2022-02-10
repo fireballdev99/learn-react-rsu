@@ -20,7 +20,6 @@ import {
     Stack,
     Typography
 } from '@mui/material';
-import axios from 'axios';
 import Cookies from 'js-cookie';
 
 // third party
@@ -34,6 +33,8 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 // assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
+import { login } from 'services/users';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
@@ -53,11 +54,7 @@ const FirebaseLogin = ({ ...others }) => {
     };
 
     const authen = (usernames, passwords) => {
-        axios
-            .post(`https://dodeep-api.mecallapi.com/auth/login`, {
-                username: usernames,
-                password: passwords
-            })
+        login(usernames, passwords)
             .then((response) => {
                 if (response.data) {
                     Cookies.set('username', usernames, { expires: 7 });
@@ -67,8 +64,12 @@ const FirebaseLogin = ({ ...others }) => {
                         text: 'Welcome to Admin Dashboard',
                         icon: 'success',
                         confirmButtonText: 'Close'
+                    }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                            navigate('/');
+                        }
                     });
-                    navigate('/');
                 }
             })
             .catch((error) => {
