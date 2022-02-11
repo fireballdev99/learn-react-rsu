@@ -90,7 +90,7 @@ const EditPage = ({ ...others }) => {
         axios.get(`https://dodeep-api.mecallapi.com/users/${id}`, config).then((res) => {
             setItems(res.data.user);
         });
-    }, []);
+    }, [id]);
     if (!items) {
         return <div>Loading</div>;
     }

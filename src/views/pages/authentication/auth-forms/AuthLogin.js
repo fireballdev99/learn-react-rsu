@@ -73,6 +73,7 @@ const FirebaseLogin = ({ ...others }) => {
                 }
             })
             .catch((error) => {
+                console.log(error);
                 Swal.fire({
                     title: 'Username or Password invalid!',
                     text: 'please try again',
