@@ -118,7 +118,7 @@ export function EditDialog(id, fnames, lnames) {
 
     useEffect(() => {
         setData({ fname: fnames, lname: lnames });
-    }, []);
+    }, [fnames, lnames]);
 
     return (
         <div>
@@ -184,6 +184,7 @@ const MemberList = () => {
     const [data, setData] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
     const [totalRows, setTotalRows] = useState(0);
+    const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(10);
     const [error, setError] = useState('');
 
@@ -216,46 +217,34 @@ const MemberList = () => {
         }
     ];
 
-    // ==============================|| Get members  ||============================== //
-    const getMembers = async (page) => {
-        setIsLoaded(true);
-        const token = Cookies.get('accessToken');
-        const config = {
-            headers: { Authorization: `Bearer ${token}` }
-        };
-        fetch(`https://dodeep-api.mecallapi.com/users?page=${page}&per_page=${perPage}&delay=1`, config)
-            .then((res) => res.json())
-            .then((result) => {
-                setData(result.data);
-                setTotalRows(result.total);
-            })
-            .catch((err) => setError(err));
-        setIsLoaded(false);
-    };
-
     const handlePageChange = (page) => {
-        getMembers(page);
+        setPage(page);
     };
 
     const handlePerRowsChange = async (newPerPage, page) => {
-        setIsLoaded(true);
-        const token = Cookies.get('accessToken');
-        const config = {
-            headers: { Authorization: `Bearer ${token}` }
-        };
-        fetch(`https://dodeep-api.mecallapi.com/users?page=${page}&per_page=${newPerPage}&delay=1`, config)
-            .then((res) => res.json())
-            .then((result) => {
-                setData(result.data);
-                setTotalRows(result.total);
-            })
-            .catch((err) => setError(err));
-        setIsLoaded(false);
+        setPerPage(newPerPage);
+        setPage(page);
     };
 
     useEffect(() => {
-        getMembers(1);
-    }, []);
+        // ==============================|| Get members  ||============================== //
+        const getMembers = async () => {
+            setIsLoaded(true);
+            const token = Cookies.get('accessToken');
+            const config = {
+                headers: { Authorization: `Bearer ${token}` }
+            };
+            fetch(`https://dodeep-api.mecallapi.com/users?page=${page}&per_page=${perPage}&delay=1`, config)
+                .then((res) => res.json())
+                .then((result) => {
+                    setData(result.data);
+                    setTotalRows(result.total);
+                })
+                .catch((err) => setError(err));
+            setIsLoaded(false);
+        };
+        getMembers();
+    }, [page, perPage]);
 
     if (error) {
         return <div>Error: {error.message}</div>;

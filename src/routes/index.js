@@ -6,18 +6,28 @@ import AuthenticationRoutes from './AuthenticationRoutes';
 import config from 'config';
 import { useEffect } from 'react';
 import Cookies from 'js-cookie';
+import { verify } from 'services/users';
 
 // ==============================|| ROUTING RENDER ||============================== //
 
 export default function ThemeRoutes() {
     const navigate = useNavigate();
     useEffect(() => {
-        const getToken = Cookies.get('accessToken');
-        if (getToken) {
-            console.log('Authorized');
+        const accessToken = Cookies.get('accessToken');
+        if (accessToken) {
+            verify(accessToken)
+                .then((response) => {
+                    if (response.data.status === 'ok') {
+                        console.log('Authorized');
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    navigate('/pages/login/login3');
+                });
         } else {
             navigate('/pages/login/login3');
         }
-    }, []);
+    }, [navigate]);
     return useRoutes([MainRoutes, AuthenticationRoutes], config.basename);
 }
