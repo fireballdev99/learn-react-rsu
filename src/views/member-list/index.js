@@ -6,9 +6,9 @@ import DataTable from 'react-data-table-component';
 import Cookies from 'js-cookie';
 
 // Icons
-import { Button, Typography, Box } from '@mui/material';
+import { Button, Typography, Box, Chip } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { pink, amber } from '@mui/material/colors';
+import { pink, amber, green, red } from '@mui/material/colors';
 
 // Dialog
 import TextField from '@mui/material/TextField';
@@ -180,6 +180,26 @@ export function Edit(id) {
     );
 }
 
+export function StatusShow(id) {
+    const [status, setStatus] = useState(null);
+    useEffect(() => {
+        const token = Cookies.get('accessToken');
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+        axios.get(`https://dodeep-api.mecallapi.com/users/${id}`, config).then((res) => setStatus(res.data.user.status));
+    });
+    if (!status) {
+        return <div>Loading...</div>;
+    }
+    if (status === 'active') {
+        return <Chip label="Active" color="success" sx={{ backgroundColor: green.A200 }} />;
+    }
+    if (status === 'inactive') {
+        return <Chip label="Inactive" color="error" sx={{ backgroundColor: red.A200 }} />;
+    }
+}
+
 const MemberList = () => {
     const [data, setData] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -203,6 +223,10 @@ const MemberList = () => {
         {
             name: 'Username',
             selector: (row) => row.username
+        },
+        {
+            name: 'Status',
+            cell: (id) => StatusShow(id.userId)
         },
         {
             name: '',
