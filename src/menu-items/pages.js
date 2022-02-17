@@ -18,18 +18,10 @@ const pages = {
         {
             id: 'member',
             title: 'Member',
-            type: 'collapse',
             icon: PersonIcon,
-
-            children: [
-                {
-                    id: 'memberlist',
-                    title: 'Member List',
-                    type: 'item',
-                    url: '/member-list',
-                    target: false
-                }
-            ]
+            type: 'item',
+            url: '/member-list',
+            target: false
         },
         {
             id: 'authentication',

@@ -17,7 +17,9 @@ import {
     OutlinedInput,
     TextField,
     Typography,
-    useMediaQuery
+    useMediaQuery,
+    Select,
+    MenuItem
 } from '@mui/material';
 
 // third party
@@ -64,7 +66,7 @@ const FirebaseRegister = ({ ...others }) => {
         setLevel(strengthColor(temp));
     };
 
-    const register = (usernames, passwords, fnames, lnames) => {
+    const register = (usernames, passwords, fnames, lnames, stat) => {
         const token = Cookies.get('accessToken');
         const config = {
             headers: { Authorization: `Bearer ${token}` }
@@ -77,12 +79,12 @@ const FirebaseRegister = ({ ...others }) => {
                     password: passwords,
                     fname: fnames,
                     lname: lnames,
-                    roles: ['admin']
+                    roles: ['admin'],
+                    status: stat
                 },
                 config
             )
             .then((response) => {
-                console.log(response.data);
                 navigate('/member-list');
                 Swal.fire({
                     title: response.data.message,
@@ -116,6 +118,7 @@ const FirebaseRegister = ({ ...others }) => {
                         password: '',
                         fname: '',
                         lname: '',
+                        stat: '',
                         submit: null
                     }}
                     validationSchema={Yup.object().shape({
@@ -126,7 +129,7 @@ const FirebaseRegister = ({ ...others }) => {
                         console.log(values);
                         try {
                             if (scriptedRef.current) {
-                                register(values.username, values.password, values.fname, values.lname);
+                                register(values.username, values.password, values.fname, values.lname, values.stat);
                                 setStatus({ success: true });
                                 setSubmitting(false);
                             }
@@ -171,82 +174,98 @@ const FirebaseRegister = ({ ...others }) => {
                                 </Grid>
                             </Grid>
                             <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-                                <InputLabel htmlFor="outlined-adornment-username-register">Username</InputLabel>
-                                <OutlinedInput
-                                    id="outlined-adornment-username-register"
-                                    type="username"
-                                    value={values.username}
-                                    name="username"
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    inputProps={{}}
-                                />
-                                {touched.email && errors.email && (
-                                    <FormHelperText error id="standard-weight-helper-text--register">
-                                        {errors.email}
-                                    </FormHelperText>
-                                )}
-                            </FormControl>
+                                <Grid container spacing={matchDownSM ? 0 : 2}>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Username"
+                                            value={values.username}
+                                            margin="normal"
+                                            name="username"
+                                            onChange={handleChange}
+                                            type="text"
+                                            inputProps={{}}
+                                            sx={{ ...theme.typography.customInput }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <FormControl
+                                            fullWidth
+                                            error={Boolean(touched.password && errors.password)}
+                                            sx={{ ...theme.typography.customInput }}
+                                        >
+                                            <InputLabel htmlFor="outlined-adornment-password-register">Password</InputLabel>
+                                            <OutlinedInput
+                                                id="outlined-adornment-password-register"
+                                                type={showPassword ? 'text' : 'password'}
+                                                value={values.password}
+                                                name="password"
+                                                label="Password"
+                                                onBlur={handleBlur}
+                                                onChange={(e) => {
+                                                    handleChange(e);
+                                                    changePassword(e.target.value);
+                                                }}
+                                                endAdornment={
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            aria-label="toggle password visibility"
+                                                            onClick={handleClickShowPassword}
+                                                            onMouseDown={handleMouseDownPassword}
+                                                            edge="end"
+                                                            size="large"
+                                                        >
+                                                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                }
+                                                inputProps={{}}
+                                            />
+                                            {touched.password && errors.password && (
+                                                <FormHelperText error id="standard-weight-helper-text-password-register">
+                                                    {errors.password}
+                                                </FormHelperText>
+                                            )}
+                                        </FormControl>
 
-                            <FormControl
-                                fullWidth
-                                error={Boolean(touched.password && errors.password)}
-                                sx={{ ...theme.typography.customInput }}
-                            >
-                                <InputLabel htmlFor="outlined-adornment-password-register">Password</InputLabel>
-                                <OutlinedInput
-                                    id="outlined-adornment-password-register"
-                                    type={showPassword ? 'text' : 'password'}
-                                    value={values.password}
-                                    name="password"
-                                    label="Password"
-                                    onBlur={handleBlur}
-                                    onChange={(e) => {
-                                        handleChange(e);
-                                        changePassword(e.target.value);
-                                    }}
-                                    endAdornment={
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                                onClick={handleClickShowPassword}
-                                                onMouseDown={handleMouseDownPassword}
-                                                edge="end"
-                                                size="large"
-                                            >
-                                                {showPassword ? <Visibility /> : <VisibilityOff />}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    }
-                                    inputProps={{}}
-                                />
-                                {touched.password && errors.password && (
-                                    <FormHelperText error id="standard-weight-helper-text-password-register">
-                                        {errors.password}
-                                    </FormHelperText>
-                                )}
+                                        {strength !== 0 && (
+                                            <FormControl fullWidth>
+                                                <Box>
+                                                    <Grid container spacing={2} alignItems="center">
+                                                        <Grid item>
+                                                            <Box
+                                                                style={{ backgroundColor: level?.color }}
+                                                                sx={{ width: 85, height: 8, borderRadius: '7px' }}
+                                                            />
+                                                        </Grid>
+                                                        <Grid item>
+                                                            <Typography variant="subtitle1" fontSize="0.75rem">
+                                                                {level?.label}
+                                                            </Typography>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Box>
+                                            </FormControl>
+                                        )}
+                                    </Grid>
+                                </Grid>
                             </FormControl>
-
-                            {strength !== 0 && (
+                            <Box sx={{ maxWidth: 260, mt: -2 }}>
                                 <FormControl fullWidth>
-                                    <Box sx={{ mb: 2 }}>
-                                        <Grid container spacing={2} alignItems="center">
-                                            <Grid item>
-                                                <Box
-                                                    style={{ backgroundColor: level?.color }}
-                                                    sx={{ width: 85, height: 8, borderRadius: '7px' }}
-                                                />
-                                            </Grid>
-                                            <Grid item>
-                                                <Typography variant="subtitle1" fontSize="0.75rem">
-                                                    {level?.label}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
+                                    <InputLabel id="select-status">Status</InputLabel>
+                                    <Select
+                                        labelId="select-status"
+                                        id="stat"
+                                        value={values.stat}
+                                        label="Status"
+                                        onChange={handleChange}
+                                        name="stat"
+                                    >
+                                        <MenuItem value="active">Active</MenuItem>
+                                        <MenuItem value="inactive">Inactive</MenuItem>
+                                    </Select>
                                 </FormControl>
-                            )}
-
+                            </Box>
                             <Grid container alignItems="center" justifyContent="space-between">
                                 <Grid item>
                                     <FormControlLabel

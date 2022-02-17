@@ -6,9 +6,9 @@ import DataTable from 'react-data-table-component';
 import Cookies from 'js-cookie';
 
 // Icons
-import { Button, Typography, Box } from '@mui/material';
+import { Button, Typography, Box, Chip } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { pink, amber } from '@mui/material/colors';
+import { pink, amber, green, red } from '@mui/material/colors';
 
 // Dialog
 import TextField from '@mui/material/TextField';
@@ -17,6 +17,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import Grid from '@mui/material/Grid';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import EditIcon from '@mui/icons-material/Edit';
@@ -180,6 +181,15 @@ export function Edit(id) {
     );
 }
 
+export function StatusShow(id, status) {
+    if (status === 'active') {
+        return <Chip label="Active" color="success" sx={{ backgroundColor: green.A200 }} />;
+    }
+    if (status === 'inactive') {
+        return <Chip label="Inactive" color="error" sx={{ backgroundColor: red.A200 }} />;
+    }
+}
+
 const MemberList = () => {
     const [data, setData] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -189,6 +199,10 @@ const MemberList = () => {
     const [error, setError] = useState('');
 
     const columns = [
+        {
+            name: 'No',
+            cell: (row, index) => <Typography>{(page - 1) * 10 + index + 1}</Typography>
+        },
         {
             name: 'UserID',
             selector: (row) => row.userId
@@ -206,14 +220,18 @@ const MemberList = () => {
             selector: (row) => row.username
         },
         {
-            name: '',
-            button: true,
-            cell: (id) => Edit(id.userId)
+            name: 'Status',
+            cell: (row) => StatusShow(row.userId, row.status)
         },
         {
             name: '',
             button: true,
-            cell: (id) => AlertDeleteDialog(id.userId, id.fname, id.lname)
+            cell: (row) => Edit(row.userId)
+        },
+        {
+            name: '',
+            button: true,
+            cell: (row) => AlertDeleteDialog(row.userId, row.fname, row.lname)
         }
     ];
 
@@ -254,11 +272,13 @@ const MemberList = () => {
     }
     return (
         <div style={{ height: '100%', width: '100%', borderRadius: '1.25rem 1.25rem 0px 0px' }}>
-            <Typography to="/">
-                <Button style={{ margin: '0 0 10px 10px' }} variant="contained" color="success" href="/register">
-                    Add Members
-                </Button>
-            </Typography>
+            <Grid container justifyContent="flex-end">
+                <Typography to="/">
+                    <Button style={{ margin: '0 0 10px 10px' }} variant="contained" href="/register">
+                        Add Members
+                    </Button>
+                </Typography>
+            </Grid>
             <DataTable
                 columns={columns}
                 data={data}
